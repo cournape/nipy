@@ -1,0 +1,186 @@
+Name: nipy
+Version: 0.1.2.dev
+Summary: This is a neuroimaging python package
+Url: http://nipy.org
+Description:     
+    Neuroimaging tools for Python (NIPY).
+    
+    The aim of NIPY is to produce a platform-independent Python environment for
+    the analysis of brain imaging data using an open development model.
+    
+    While
+    the project is still in its initial stages, packages for file I/O, script
+    support as well as single subject fMRI and random effects group comparisons
+    model are currently available.
+    
+    Specifically, we aim to:
+    
+       1. Provide an open source, mixed language scientific programming
+          environment suitable for rapid development.
+    
+       2. Create sofware components in this environment to make it easy
+          to develop tools for MRI, EEG, PET and other modalities.
+    
+       3. Create and maintain a wide base of developers to contribute to
+          this platform.
+    
+       4. To maintain and develop this framework as a single, easily
+          installable bundle.
+    
+    Package Organization 
+    ==================== 
+    The nipy package contains the following subpackages and modules: 
+    
+    .. packagetree:: 
+       :style: UML  
+Author: Various
+AuthorEmail: nipy-devel@neuroimaging.scipy.org
+Maintainer: Various
+MaintainerEmail: nipy-devel@neuroimaging.scipy.org
+
+HookFile: bscript
+
+ExtraSourceFiles:
+    libcstat/fff/*.h,
+    libcstat/wrapper/*.pxd,
+    libcstat/wrapper/*.h,
+    libcstat/lapack_lite/*.c,
+    libcstat/lapack_lite/*.h,
+    libcstat/lapack_lite/remake/*.py,
+    libcstat/lapack_lite/remake/README,
+    libcstat/lapack_lite/remake/wrapped_routines.txt,
+    libcstat/randomkit/*.c,
+    libcstat/randomkit/*.h,
+    libcstat/wrapper/*.pxd,
+    nipy/neurospin/segmentation/*.h,
+    nipy/neurospin/image/*.h,
+    nipy/neurospin/registration/*.h
+
+DataFiles: tests
+    TargetDir: $sitedir/$pkgname/
+    SourceDir: nipy
+    Files:
+        algorithms/statistics/tests/*.py,
+        algorithms/diagnostics/tests/data/*.m,
+        algorithms/diagnostics/tests/data/*.mat,
+        algorithms/diagnostics/*.py,
+        algorithms/tests/*.py,
+        core/image/tests/*.py,
+        core/reference/tests/*.py,
+        core/transforms/tests/*.py,
+        fixes/scipy/stats/models/*.py,
+        interfaces/tests/*.py,
+        io/imageformats/tests/*.py,
+        io/imageformats/tests/data/*.hdr,
+        io/imageformats/tests/data/*.gz,
+        io/tests/*.py,
+        modalities/fmri/fmristat/tests/*.py,
+        neurospin/bindings/benchmarks/*.py,
+        neurospin/bindings/tests/*.py,
+        neurospin/clustering/tests/*.py,
+        neurospin/clustering/benchmarks/*.py,
+        neurospin/datasets/transforms/tests/*.py,
+        neurospin/datasets/volumes/tests/*.py,
+        neurospin/glm/tests/*.py,
+        neurospin/graph/tests/*.py,
+        neurospin/group/tests/*.py,
+        neurospin/image/tests/*.py,
+        neurospin/registration/tests/*.py,
+        neurospin/spatial_models/tests/*.py,
+        neurospin/utils/tests/*.py,
+        testing/*.py,
+        testing/*.gz
+
+Library:
+    Packages:
+        nipy,
+        nipy.algorithms,
+        nipy.algorithms.diagnostics,
+        nipy.algorithms.statistics,
+        nipy.core,
+        nipy.core.image,
+        nipy.core.reference,
+        nipy.core.transforms,
+        nipy.externals,
+        nipy.fixes,
+        nipy.fixes.scipy,
+        nipy.fixes.scipy.stats,
+        nipy.fixes.scipy.stats.models,
+        nipy.fixes.scipy.stats.models.family,
+        nipy.interfaces,
+        nipy.io,
+        nipy.io.imageformats,
+        nipy.io.imageformats.testing,
+        nipy.modalities,
+        nipy.modalities.fmri,
+        nipy.modalities.fmri.fmristat,
+        nipy.modalities.fmri.spm,
+        nipy.neurospin,
+        nipy.neurospin.bindings,
+        nipy.neurospin.clustering,
+        nipy.neurospin.datasets,
+        nipy.neurospin.datasets.transforms,
+        nipy.neurospin.datasets.volumes,
+        nipy.neurospin.eda,
+        nipy.neurospin.glm,
+        nipy.neurospin.graph,
+        nipy.neurospin.group,
+        nipy.neurospin.image,
+        nipy.neurospin.registration,
+        nipy.neurospin.segmentation,
+        nipy.neurospin.spatial_models,
+        nipy.neurospin.utils,
+        nipy.neurospin.viz_tools,
+        nipy.testing,
+        nipy.utils
+    Extension: nipy.neurospin.group.glm_twolevel
+        Sources:
+            nipy/neurospin/group/glm_twolevel.pyx
+    Extension: nipy.neurospin.clustering._clustering
+        Sources:
+            nipy/neurospin/clustering/clustering.c
+    Extension: nipy.neurospin.graph._field
+        Sources:
+            nipy/neurospin/graph/field.c
+    Extension: nipy.algorithms.statistics.intvol
+        Sources:
+            nipy/algorithms/statistics/intvol.pyx
+    Extension: nipy.neurospin.segmentation.mrf_module
+        Sources:
+            nipy/neurospin/segmentation/mrf_module.pyx,
+            nipy/neurospin/segmentation/mrf.c
+    Extension: nipy.neurospin.bindings.linalg
+        Sources:
+            nipy/neurospin/bindings/linalg.pyx
+    Extension: nipy.neurospin.image.image_module
+        Sources:
+            nipy/neurospin/image/image_module.pyx,
+            nipy/neurospin/image/cubic_spline.c
+    Extension: nipy.neurospin.group.onesample
+        Sources:
+            nipy/neurospin/group/onesample.pyx
+    Extension: nipy.neurospin.utils.routines
+        Sources:
+            nipy/neurospin/utils/routines.pyx
+    Extension: nipy.neurospin.bindings.array
+        Sources:
+            nipy/neurospin/bindings/array.pyx
+    Extension: nipy.neurospin.registration.registration_module
+        Sources:
+            nipy/neurospin/registration/registration_module.pyx,
+            nipy/neurospin/registration/iconic.c
+    Extension: nipy.neurospin.bindings.wrapper
+        Sources:
+            nipy/neurospin/bindings/wrapper.pyx
+    Extension: nipy.neurospin.graph._graph
+        Sources:
+            nipy/neurospin/graph/graph.c
+    Extension: nipy.neurospin.group.twosample
+        Sources:
+            nipy/neurospin/group/twosample.pyx
+    Extension: nipy.neurospin.glm.kalman
+        Sources:
+            nipy/neurospin/glm/kalman.pyx
+    Extension: nipy.neurospin.group.routines
+        Sources:
+            nipy/neurospin/group/routines.pyx

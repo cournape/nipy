@@ -1,0 +1,67 @@
+import os
+import sys
+import tempfile
+import subprocess
+
+from bento.commands.hooks \
+    import \
+        post_configure, register_command
+from bento.commands.core \
+    import \
+        Command
+
+def hack_test():
+    egg = os.path.join("dist", "nipy-0.1.2.dev-py2.6.egg")
+
+    d = tempfile.mkdtemp()
+    cmd = ["virtualenv", d]
+    subprocess.check_call(cmd)
+
+    cmd = [os.path.join(d, "bin", "easy_install"), egg]
+    subprocess.check_call(cmd)
+
+    oldd = os.getcwd()
+    # Go into an arbitrary directory to avoid weird sys.path issues
+    newd = tempfile.mkdtemp()
+    os.chdir(newd)
+    try:
+        cmd = [os.path.join(os.path.abspath(d), "bin", "python"), "-c", "'import nipy; nipy.test()'"]
+        os.system(" ".join(cmd))
+    finally:
+        os.chdir(oldd)
+
+class TestCommand(Command):
+    long_descr = """\
+Purpose: run the test suite
+Usage: bentomaker test [OPTIONS]"""
+    short_descr = "Run the test suite"
+
+    def run(self, ctx):
+        self.set_option_parser()
+        o, a = self.parser.parse_args(ctx.cmd_opts)
+        if o.help:
+            self.parser.print_help()
+            return
+
+        hack_test()
+
+@post_configure
+def myconfigure(ctx):
+    from numpy.distutils.misc_util \
+        import \
+            get_numpy_include_dirs
+
+    cfg = ctx.yaku_configure_ctx
+    cfg.use_tools(["cython"])
+    for p in get_numpy_include_dirs():
+        cfg.env["PYEXT_CPPPATH"].insert(0, p)
+
+    for p in ["wrapper", "fff", "randomkit"]:
+        cfg.env["PYEXT_CPPPATH"].append(os.path.join("libcstat", p))
+    for p in ["segmentation", "image", "registration"]:
+        cfg.env["PYEXT_CPPPATH"].append(os.path.join("nipy", "neurospin", p))
+
+    cfg.env["CYTHON_CPPPATH"].append(os.path.join("libcstat", "wrapper"))
+
+def startup():
+    register_command("test", TestCommand)

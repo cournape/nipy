@@ -133,6 +133,14 @@ Library:
         nipy.neurospin.viz_tools,
         nipy.testing,
         nipy.utils
+    CompiledLibrary: cstat
+        Sources:
+            libcstat/fff/*.c,
+            libcstat/randomkit/*.c,
+            libcstat/wrapper/*.c
+        IncludeDirs:
+            libcstat/randomkit,
+            libcstat/fff
     Extension: nipy.neurospin.group.glm_twolevel
         Sources:
             nipy/neurospin/group/glm_twolevel.pyx

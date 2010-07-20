@@ -5,16 +5,17 @@ import subprocess
 
 from bento.commands.hooks \
     import \
-        post_configure, register_command
+        post_configure, register_command, pre_configure
 from bento.commands.core \
     import \
         Command
 
 def hack_test():
+    # API to get egg filename
     egg = os.path.join("dist", "nipy-0.1.2.dev-py2.6.egg")
 
     d = tempfile.mkdtemp()
-    cmd = ["virtualenv", d]
+    cmd = ["virtualenv", "-p", sys.executable, d]
     subprocess.check_call(cmd)
 
     cmd = [os.path.join(d, "bin", "easy_install"), egg]
@@ -45,23 +46,35 @@ Usage: bentomaker test [OPTIONS]"""
 
         hack_test()
 
+@pre_configure
+def pre_configure(ctx):
+    cfg = ctx.yaku_configure_ctx
+    cfg.load_tool("cython")
+    cfg.load_tool("ctasks")
+
 @post_configure
 def myconfigure(ctx):
+    from distutils.sysconfig \
+        import \
+            get_python_inc
     from numpy.distutils.misc_util \
         import \
             get_numpy_include_dirs
 
     cfg = ctx.yaku_configure_ctx
-    cfg.use_tools(["cython"])
+
+    cfg.env["CPPPATH"].insert(0, get_python_inc())
     for p in get_numpy_include_dirs():
         cfg.env["PYEXT_CPPPATH"].insert(0, p)
-
+        cfg.env["CPPPATH"].insert(0, p)
     for p in ["wrapper", "fff", "randomkit"]:
         cfg.env["PYEXT_CPPPATH"].append(os.path.join("libcstat", p))
     for p in ["segmentation", "image", "registration"]:
         cfg.env["PYEXT_CPPPATH"].append(os.path.join("nipy", "neurospin", p))
-
     cfg.env["CYTHON_CPPPATH"].append(os.path.join("libcstat", "wrapper"))
+
+    cfg.env["PYEXT_LIBDIR"].insert(0, cfg.env["BLDDIR"])
+    cfg.env["PYEXT_LIBS"].insert(0, "cstat")
 
 def startup():
     register_command("test", TestCommand)

@@ -10,6 +10,10 @@ from bento.commands.core \
     import \
         Command
 
+from yaku.conftests \
+    import \
+        check_compiler
+
 def hack_test():
     # API to get egg filename
     egg = os.path.join("dist", "nipy-0.1.2.dev-py2.6.egg")
@@ -54,6 +58,8 @@ def pre_configure(ctx):
 
 @post_configure
 def myconfigure(ctx):
+    if ctx.help:
+        return
     from distutils.sysconfig \
         import \
             get_python_inc
@@ -62,6 +68,13 @@ def myconfigure(ctx):
             get_numpy_include_dirs
 
     cfg = ctx.yaku_configure_ctx
+
+    if sys.platform == "darwin":
+        for arch in ["ppc", "ppc64", "i386", "x86_64"]:
+            cfg.env["CFLAGS"].extend(["-arch", arch])
+            if not check_compiler(cfg):
+                cfg.env["CFLAGS"].pop()
+                cfg.env["CFLAGS"].pop()
 
     cfg.env["CPPPATH"].insert(0, get_python_inc())
     for p in get_numpy_include_dirs():

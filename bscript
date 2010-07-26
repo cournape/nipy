@@ -75,6 +75,7 @@ def myconfigure(ctx):
             if not check_compiler(cfg):
                 cfg.env["CFLAGS"].pop()
                 cfg.env["CFLAGS"].pop()
+    cfg.env["CFLAGS"].append("-fPIC")
 
     cfg.env["CPPPATH"].insert(0, get_python_inc())
     for p in get_numpy_include_dirs():
@@ -87,6 +88,8 @@ def myconfigure(ctx):
     cfg.env["CYTHON_CPPPATH"].append(os.path.join("libcstat", "wrapper"))
 
     cfg.env["PYEXT_LIBDIR"].insert(0, cfg.env["BLDDIR"])
+    cfg.env["PYEXT_LIBS"].insert(0, "blas")
+    cfg.env["PYEXT_LIBS"].insert(0, "lapack")
     cfg.env["PYEXT_LIBS"].insert(0, "cstat")
 
 def startup():
